@@ -6,7 +6,7 @@ from tensorflow.keras.models import load_model
 from PIL import Image
 import matplotlib.pyplot as plt
 
-# Download the model file
+# Download the model file (ensure it's available publicly)
 gdown.download("https://drive.google.com/uc?id=1MjgxZyWDK64ptQp5jI_ZDpDpKBDwI9-E", "model1.h5", quiet=False)
 
 # Function to load the model with error handling
@@ -73,7 +73,7 @@ if uploaded_file is not None:
 
     st.pyplot(fig)
 
-# Questionnaire
+# Questionnaire for the user
 questions = [
     "Is your eyes sensitive to light?",
     "Does your eyes feel gritty?",
@@ -126,7 +126,7 @@ if st.button("Predict"):
         total_score = sum(responses)
         st.write(f"Total Questionnaire Score: {total_score}")
 
-        # Severity grading
+        # Severity grading based on questionnaire score
         if total_score >= 30:
             severity = "Extreme Dry Eyes"
         elif 25 <= total_score < 30:
@@ -144,10 +144,11 @@ if st.button("Predict"):
         prediction = model.predict(input_image)
         predicted_class = np.argmax(prediction, axis=1)[0]
 
+        # Class labels for the model
         class_labels = ["Eyelid Labels", "Meibomian Gland Labels", "Original Images"]
         selected_recommendation = recommendations[class_labels[predicted_class]]
 
-        # Display classification and recommendations
+        # Display image classification and recommendations
         st.write(f"Image Classification: {class_labels[predicted_class]}")
         st.write(f"Recommendation: {selected_recommendation['Recommendation']}")
         st.write(f"Suggested Medicine: {selected_recommendation['Medicine']}")
