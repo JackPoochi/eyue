@@ -1,6 +1,6 @@
 Streamlit
 NumPy
-Python-opencv
+opencv-python
 TensorFlow
 Keras
 Pillow
