@@ -1,10 +1,13 @@
+import gdown
 import streamlit as st
 import numpy as np
 import cv2
 from tensorflow.keras.models import load_model
-from tensorflow.keras.utils import get_file
 from PIL import Image
 import matplotlib.pyplot as plt
+
+# Download the model file
+gdown.download("https://drive.google.com/uc?id=1MjgxZyWDK64ptQp5jI_ZDpDpKBDwI9-E", "model1.h5", quiet=False)
 
 # Function to load the model with error handling
 def load_model_with_fallback(model_path):
@@ -46,7 +49,7 @@ def preprocess_image(image):
     return balanced
 
 # Load the model
-MODEL_PATH = "https://drive.google.com/file/d/1MjgxZyWDK64ptQp5jI_ZDpDpKBDwI9-E/view?usp=drive_link/model1.h5"
+MODEL_PATH = "model1.h5"
 model = load_model_with_fallback(MODEL_PATH)
 
 # Streamlit app
@@ -155,4 +158,4 @@ if st.button("Predict"):
 
 # Footer
 st.write("---")
-#st.write("Developed by PEMCHIP")
+st.write("Developed by PEMCHIP")
