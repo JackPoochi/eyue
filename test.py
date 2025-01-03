@@ -1,21 +1,20 @@
-import gdown
 import streamlit as st
 import numpy as np
 import cv2
 from tensorflow.keras.models import load_model
+from tensorflow.keras.utils import get_file
 from PIL import Image
 import matplotlib.pyplot as plt
 
-# Download the model file (ensure it's available publicly)
-gdown.download("https://drive.google.com/uc?id=1MjgxZyWDK64ptQp5jI_ZDpDpKBDwI9-E", "model1.h5", quiet=False)
-
 # Function to load the model with error handling
-def load_model_with_fallback(model_path):
+def load_model_with_fallback(model_url):
     try:
-        model = load_model(model_path)
+        # Download the model file to a local directory
+        model_path_local = get_file("model1.h5", model_url)
+        model = load_model(model_path_local)
         st.success("Model loaded successfully!")
         return model
-    except ValueError as e:
+    except Exception as e:
         st.error(f"Model loading failed: {e}")
         st.write(
             "Ensure that the TensorFlow/Keras version matches the version used to save the model. "
@@ -48,9 +47,11 @@ def preprocess_image(image):
     balanced = adjust_white_balance(enhanced)
     return balanced
 
+# Google Drive model file URL (direct download link)
+MODEL_URL = "https://drive.google.com/uc?id=1MjgxZyWDK64ptQp5jI_ZDpDpKBDwI9-E"
+
 # Load the model
-MODEL_PATH = "model1.h5"
-model = load_model_with_fallback(MODEL_PATH)
+model = load_model_with_fallback(MODEL_URL)
 
 # Streamlit app
 st.title("Dry Eye Severity Grading and Image Classification")
@@ -73,7 +74,7 @@ if uploaded_file is not None:
 
     st.pyplot(fig)
 
-# Questionnaire for the user
+# Questionnaire
 questions = [
     "Is your eyes sensitive to light?",
     "Does your eyes feel gritty?",
@@ -126,7 +127,7 @@ if st.button("Predict"):
         total_score = sum(responses)
         st.write(f"Total Questionnaire Score: {total_score}")
 
-        # Severity grading based on questionnaire score
+        # Severity grading
         if total_score >= 30:
             severity = "Extreme Dry Eyes"
         elif 25 <= total_score < 30:
@@ -144,11 +145,10 @@ if st.button("Predict"):
         prediction = model.predict(input_image)
         predicted_class = np.argmax(prediction, axis=1)[0]
 
-        # Class labels for the model
         class_labels = ["Eyelid Labels", "Meibomian Gland Labels", "Original Images"]
         selected_recommendation = recommendations[class_labels[predicted_class]]
 
-        # Display image classification and recommendations
+        # Display classification and recommendations
         st.write(f"Image Classification: {class_labels[predicted_class]}")
         st.write(f"Recommendation: {selected_recommendation['Recommendation']}")
         st.write(f"Suggested Medicine: {selected_recommendation['Medicine']}")
