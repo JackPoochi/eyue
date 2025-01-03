@@ -1,8 +1,8 @@
 Streamlit
 NumPy
-opencv-python
 TensorFlow
 Keras
 Pillow
 Matplotlib
 gdown
+opencv-python
